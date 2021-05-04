@@ -432,7 +432,7 @@ function edgeUpdate(links)
                 .style("pointer-events", "none")
                 .attr({'class':'edgelabel',
                        'id':function(d,i){return 'edgelabel'+d.id},
-                       'dx':60,
+                       'dx':"0em",
                        'dy':-5,
                        'font-size':9,
 
@@ -441,6 +441,8 @@ function edgeUpdate(links)
             edgelabels.append('textPath')
                 .attr('xlink:href',function(d,i) {return '#edgepath'+d.id})
                 .style("pointer-events", "none")
+                .style("text-anchor","middle") //place the text halfway on the arc
+    .attr("startOffset", "50%")
                 .text(function(d,i){
                 //  console.log(d);
 
