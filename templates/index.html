@@ -37,12 +37,7 @@ line.link {
 <script>
 
 function show(ele) {
-    // GET THE SELECTED VALUE FROM <select> ELEMENT AND SHOW IT.
-    //var msg = document.getElementById('node_id');
 
-        //msg.value = ele.value;
-
-        //load(ele.value);
         getData("/api/".concat(ele.value));
 }
 
@@ -79,15 +74,6 @@ $("#sel").empty();
 </script>
 <body>
 
-  <!-- <div style="margin-top:20px"> -->
-    <!-- <form id="myForm">
-
-
-<input type="text" id="node_id"  style="padding:5px;WIDTH:75px;" value ="">
-
-    <button type="button" onclick="setNode()" value="SET" style="padding:10px 16px;">SET</button>
-
-  </form> -->
 
   <form id="mySearchForm" style="margin-top:14px;margin-bottom:14px">
 
@@ -106,27 +92,19 @@ $("#sel").empty();
   <script>
   //https://commons.wikimedia.org/wiki/File:
 
-function setNode() {
-
-//load(document.getElementById("node_id").value);
-    getData("/api/".concat(ele.value));
-
-}
-
-
-
 
 
 var json;
 
 var nodeSet = new Set();
 var json_create = {"nodes":[],"links":[]};
-var nodeMap={}
+var nodeMap={}; // kgtk nodeId: countOfNode
 var literalCount = 0;
 var nodeCount = 0;
+var midNodeCount = 0;
 var width = 1400,
     height = 850;
-var modify= 1;
+//var modify= 1;
 
 var p_list =[];
 
@@ -151,22 +129,19 @@ function setSize(d) {
     return 30;
     var myScale = d3.scale.linear()
     .domain([1, 100])
-  .range([12, 24]);
-     return myScale(d.fanout);
+    .range([12, 24]);
+      return myScale(d.fanout);
   }
   else {
-if(d.type=="qualifier_node")
-  return 5;
-  else {
-    return 10;
+    if(d.type=="qualifier_node" || d.type=="mid_node")
+      return 5;
+    else {
+      return 10;
   }
 
+}
 
-  }
-
-
-
- }
+}
 
  function color(d) {
 
@@ -189,6 +164,10 @@ if(d.type=="qualifier_node")
    {
      return "#79a6d2";
    }
+   else if(d.type=="mid_node")
+   {
+     return "#d3d3d3";
+   }
 
  }
 
@@ -202,6 +181,7 @@ function update()
 
   link = link
       .data(json.links);
+
   link.exit().remove();
 
   var  linkEnter=link.enter().append("line")
@@ -243,45 +223,39 @@ function update()
             		.style("stroke", color)
 
 
-          nodeEnter.append("text")
-              .attr("dx", 3)
-              .attr("dy", ".35em")
-              .text(function(d) {
+    nodeEnter.append("text")
+        .attr("dx", 3)
+        .attr("dy", ".35em")
+        .text(function(d) {
 
-                var node_name = d.name;
-                node_name = node_name.replace(/'|"/g, "")
+          var node_name = d.name;
+          node_name = node_name.replace(/'|"/g, "")
 
-                if(node_name[0]!="@" && node_name.includes("@"))
-                {
-                  var index = node_name.indexOf("@");
-                  node_name = node_name.substring(0,index);
+          if(node_name[0]!="@" && node_name.includes("@"))
+          {
+            var index = node_name.indexOf("@");
+            node_name = node_name.substring(0,index);
 
-                }
-                if(node_name.length>28)
-                {
-                  node_name= node_name.substring(0,25) + "...";
-                }
+          }
+          if(node_name.length>28)
+          {
+            node_name= node_name.substring(0,25) + "...";
+          }
 
-                return node_name; })
-
-
-
-  // nodeEnter.select("circle")
-  // //.style("fill", color);
-  // .attr("fill", function(d) {
-  //   return "url(#" + "http://placehold.it/50&text=Ringo" + ")";
-  // });
-                    edgepaths = edgepaths.data(link, function(d) { return 'edgepath'+d.id; });
+          return node_name; })
 
 
-                    edgepaths.exit().remove();
-
-                    edgelabels = edgelabels.data(link, function(d) { return 'edgelabel'+d.id; });
+        edgepaths = edgepaths.data(link, function(d) { return 'edgepath'+d.id; });
 
 
-                    edgelabels.exit().remove();
+        edgepaths.exit().remove();
 
-                    edgeUpdate(json.links);
+        edgelabels = edgelabels.data(link, function(d) { return 'edgelabel'+d.id; });
+
+
+        edgelabels.exit().remove();
+
+        edgeUpdate(json.links);
 
 
 
@@ -299,6 +273,8 @@ function getData(URL)
     .then(response => response.json())
     .then(data => {
 
+      var commonNodeMap={};
+
       console.log(data);
 
       var label_mapping = data["objects"][1]["labels"];
@@ -313,22 +289,19 @@ function getData(URL)
       //json_create["nodes"].push({"name": "Ringo", "fanout": edges.length ,"type":"root_node", "id": data_mapping["@id"]});
 
       json_create["nodes"].push({"name": data_mapping["label"][0], "fanout": edges.length ,"type":"root_node", "id": data_mapping["@id"]});
+      //
+      // if(!modify)
+      // {
+      //   nodeCount++;
+      //
+      // }
 
-      if(!modify)
-      {
-        nodeCount++;
-
-      }
-
-
-      modify= 0;
+      //modify= 0;
       nodeMap[data_mapping["@id"]]= nodeCount;
-
-
-    }
-    else {
+      nodeCount++;
 
     }
+
 
 
 for(var i=0; i<edges.length;i++)
@@ -345,8 +318,9 @@ continue;
 
 if(!nodeMap.hasOwnProperty(edge.o))
 {
-nodeCount++;
+
 nodeMap[edge.o]= nodeCount;
+nodeCount++;
 
 if(label_mapping.hasOwnProperty(edge.o))
 {
@@ -362,25 +336,66 @@ if(label_mapping.hasOwnProperty(edge.o))
 if(edge.hasOwnProperty("qualifiers"))
 {
 
-  var json_temp ={"nodes":[], "links":[]};
-  nodeCount++;
+  //var json_temp ={"nodes":[], "links":[]};
   nodeMap[(edge.p).concat(edge["@id"])]= nodeCount;
+  nodeCount++;
   json_create["nodes"].push({"name": "", "type":"qualifier_node", "id":(edge.p).concat(edge["@id"]), "qualifier_json": edge.qualifiers, "label_mapping": label_mapping, "edge_p":edge.p, "fan_mapping":fan_mapping, "edge_id": edge["@id"]});
   json_create["links"].push({"source": nodeMap[edge.s], "target":nodeMap[(edge.p).concat(edge["@id"])], "weight":1, "label": "", "id":edge["@id"], "linkDistance": 50});
   json_create["links"].push({"source": nodeMap[(edge.p).concat(edge["@id"])], "target":nodeMap[edge.o], "weight":1, "label": label_mapping[edge.p][0], "id":(edge.o).concat(edge["@id"]), "linkDistance": 70});
 
 
+}
+else {
+
+
+  if(commonNodeMap.hasOwnProperty((edge.s).concat("#").concat(edge.p)))
+  {
+      commonNodeMap[(edge.s).concat("#").concat(edge.p)].push([edge.o, edge["@id"]]);
+  }
+  else {
+      commonNodeMap[(edge.s).concat("#").concat(edge.p)]= [[edge.o, edge["@id"]]];
+  }
+
+  //json_create["links"].push({"source": nodeMap[edge.s], "target":nodeMap[edge.o], "weight":1, "label": label_mapping[edge.p][0], "id":edge["@id"], "linkDistance": 120});
+
+}
+
+}
+
+console.log(commonNodeMap);
+
+for(var key in commonNodeMap)
+{
+console.log(key);
+var value_list = commonNodeMap[key];
+if(value_list.length==1)
+{
+  console.log("In if");
+  var elem = value_list[0];
+  json_create["links"].push({"source": nodeMap[key.split("#")[0]], "target":nodeMap[elem[0]], "weight":1, "label": label_mapping[key.split("#")[1]][0], "id":elem[1], "linkDistance": 120});
 
 }
 else {
-  json_create["links"].push({"source": nodeMap[edge.s], "target":nodeMap[edge.o], "weight":1, "label": label_mapping[edge.p][0], "id":edge["@id"], "linkDistance": 120});
+  //var elem = value_list[0];
+  //json_create["links"].push({"source": nodeMap[key.split("#")[0]], "target":nodeMap[elem[0]], "weight":1, "label": label_mapping[key.split("#")[1]][0], "id":elem[1], "linkDistance": 120});
+   console.log("In else");
+  nodeMap[key]= nodeCount;
+  nodeCount++;
+  midNodeCount++;
+  json_create["nodes"].push({"name": "", "type":"mid_node", "id":key});
+  json_create["links"].push({"source": nodeMap[key.split("#")[0]], "target":nodeMap[key], "weight":1, "label": label_mapping[key.split("#")[1]][0], "id":(key).concat("#").concat(midNodeCount), "linkDistance": 120});
+
+  for(var i= 0; i<value_list.length; i++)
+  {
+       console.log("In for loop");
+    var val = value_list[i];
+    json_create["links"].push({"source": nodeMap[key], "target":nodeMap[val[0]], "weight":1, "label": "", "id":val[1], "linkDistance": 60});
+
+  }
+}
 
 }
 
-
-
-
-}
 
 json = json_create;
 console.log(json);
@@ -515,8 +530,9 @@ function expandQualifier(d)
 
      if(!nodeMap.hasOwnProperty(qualifier_edge.o))
      {
-     nodeCount++;
+
      nodeMap[qualifier_edge.o]= nodeCount;
+      nodeCount++;
 
      if(d.label_mapping.hasOwnProperty(qualifier_edge.o))
      {
@@ -541,12 +557,10 @@ function expandQualifier(d)
 
      //json_create["links"].push({"source": nodeMap[(edge.p).concat(edge["@id"])], "target":nodeMap[qualifier_edge.o], "weight":1, "label": label_mapping[qualifier_edge.p][0], "id":(qualifier_edge.o).concat(edge["@id"]), "linkDistance": 160});
 
-     json_create["links"].push({"source": nodeMap[(d.edge_p).concat(d.edge_id)], "target":nodeMap[qualifier_edge.o], "weight":1, "label": d.label_mapping[qualifier_edge.p][0], "id":(qualifier_edge.o).concat(d.edge_id), "linkDistance": 50, "type":"qualifier_edge"});
+     json_create["links"].push({"source": nodeMap[(d.edge_p).concat(d.edge_id)], "target":nodeMap[qualifier_edge.o], "weight":1, "label": d.label_mapping[qualifier_edge.p][0], "id":(qualifier_edge.o).concat(d.edge_id), "linkDistance": 50, "type":"qualifier_edge"  });
 
 
   }
-
-
 
 
 }
