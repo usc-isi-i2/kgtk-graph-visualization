@@ -20,7 +20,7 @@ app.static_url_path='/static'
 
 ### URL handlers:
 
-@app.route('/index')
+@app.route('/')
 def index():
     return render_template("index.html")
 
