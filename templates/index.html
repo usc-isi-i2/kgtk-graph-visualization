@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <script src="http://d3js.org/d3.v2.min.js?2.9.3"></script>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
 <style>
+.test {
+white-space:normal;
+}
 
 .link {
   stroke: #aaa;
@@ -34,12 +41,12 @@ line.link {
 
 .sidenav {
   height: 100%; /* Full-height: remove this if you want "auto" height */
-  width: 25%; /* Set the width of the sidebar */
+  width: 30%; /* Set the width of the sidebar */
   position: fixed; /* Fixed Sidebar (stay in place on scroll) */
   z-index: 1; /* Stay on top */
   top: 0; /* Stay at the top */
-  left: 75%;
-  background-color: #e6f2ff; /* Black */
+  left: 70%;
+  //background-color: #DCDCDC; /* Black */
   overflow-x: hidden; /* Disable horizontal scroll */
   padding: 20px;
 }
@@ -379,22 +386,38 @@ else {
 
 }
 var div = document.getElementById('literalDiv');
-div.innerHTML ="";
+//div.innerHTML =data_mapping["label"][0];
+var sub_div="";
+sub_div+="<div class='card'><article class='card-group-item'><header class='card-header'><h4 class='title'>".concat(data_mapping["label"][0]).concat("</h4></header><div class='filter-content'><div class='list-group list-group-flush'>");
+
 for(var property in literalMap)
 {
   var literal_list = literalMap[property];
 
-  div.innerHTML += "<br><h4>Property ".concat(label_mapping[property][0]).concat("</h4></br><ul>");
-
+  //div.innerHTML += "<br><h4>Property ".concat(label_mapping[property][0]).concat("</h4></br><ul>");
+      //div.innerHTML+="<div class='card'><article class='card-group-item'><header class='card-header'><h4 class='title'>Similar category </h4></header><div class='filter-content'><div class='list-group list-group-flush'>";
   for(var j=0;j<literal_list.length; j++)
   {
+    console.log(literal_list[j]);
+    if(literal_list[j].length>25)
+    {
+      sub_div+=" <a href='#' class='list-group-item test'>".concat(label_mapping[property][0]).concat("<span class='float-right badge badge-light round test'>").concat(literal_list[j].substring(0,25)).concat("...</span> </a>");
 
-    div.innerHTML += ("<h5><li class='list-group-item'>").concat(literal_list[j]).concat("</li></h5></br>");
+    }
+    else {
+      sub_div+=" <a href='#' class='list-group-item test'>".concat(label_mapping[property][0]).concat("<span class='float-right badge badge-light round test'>").concat(literal_list[j]).concat("</span> </a>");
+
+    }
+    //div.innerHTML+=" <a href='#' class='list-group-item test'>".concat(label_mapping[property][0]).concat("<span class='float-right badge badge-light round test'>").concat(literal_list[j]).concat("</span> </a>");
+
+    //div.innerHTML += ("<h5><li class='list-group-item'>").concat(literal_list[j]).concat("</li></h5></br>");
   }
-    div.innerHTML +="</ul>";
+    //div.innerHTML +="</ul>";
+
 
 }
-
+sub_div+="</div></div></article></div><br><br>";
+div.innerHTML= sub_div + div.innerHTML;
 
 json = json_create;
 
