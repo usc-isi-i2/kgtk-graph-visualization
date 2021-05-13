@@ -45,63 +45,12 @@ line.link {
 }
 
 </style>
-<script>
 
-function show(ele) {
-
-        getData("/api/".concat(ele.value));
-}
-
-function setSearch() {
-
-var search_val = document.getElementById("search_id").value;
-
-fetch(`/search/${search_val}`)
-      .then(function (response) {
-          return response.json();
-      }).then(function (data) {
-
-          var search_results = [];
-          for(var i =0; i< data.length; i++)
-          {
-            search_results.push([data[i].qnode, data[i].label[0]]);
-          }
-
-$("#sel").empty();
-          var ele = document.getElementById('sel');
-                      for (var i = 0; i < search_results.length; i++) {
-
-                          ele.innerHTML = ele.innerHTML +
-                              '<option value="' + search_results[i][0] + '">' + search_results[i][1] + '</option>';
-                      }
-
-      });
-
-
-}
-
-
-
-</script>
 <body>
   <div class="sidenav" id="literalDiv">
 
   </div>
 
-  <form id="mySearchForm" style="margin-top:14px;margin-bottom:14px; margin-left:50px;">
-
-
-<input type="text" id="search_id"  style="padding:5px;WIDTH:175px;height: 60px;" value ="">
-
-  <button type="button" onclick="setSearch()" value="SEARCH" style="padding:10px 6px; width: 100px;height: 50px;">SEARCH</button>
-
-</form>
-
-<select id="sel" onchange="show(this)" style="margin-left:50px;width:285px; height: 50px;" >
-     <option value="">-- Select --</option>
- </select>
-
-    <p id="msg"></p>
   <script>
 
 
@@ -113,7 +62,7 @@ var literalCount = 0;
 var nodeCount = 0;
 var midNodeCount = 0;
 var width = 1400,
-    height = 850;
+    height = 1000;
 
 
 var p_list =[];
@@ -128,7 +77,6 @@ var p_list =[];
     }
 
     });
-
 
 
 function setSize(d) {
@@ -448,7 +396,8 @@ return ;
 });
 
 }
-
+var node_val = '{{value}}';
+getData("/api/".concat(node_val));
 function edgeUpdate(links)
 {
 
