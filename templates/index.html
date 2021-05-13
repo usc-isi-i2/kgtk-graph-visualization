@@ -16,14 +16,14 @@
 }
 
 .node text {
-  font: 10px sans-serif;
+  font: 12.5px sans-serif;
   pointer-events: none;
   text-anchor: middle;
 }
 
 line.link {
   stroke: #C8C8C8;
-  stroke-width: 1px;
+  stroke-width: 0.5px;
 }
 
 .link text {
@@ -81,6 +81,9 @@ var p_list =[];
 
 function setSize(d) {
 
+  if(d.type=="root_node")
+  {return 24;}
+
   if(d.hasOwnProperty("fanout"))
   {
     if(d.fanout>100)
@@ -103,6 +106,8 @@ function setSize(d) {
 
  function color(d) {
 
+
+
    if(d.type=="node")
    {
      return "#c6dbef";
@@ -120,6 +125,7 @@ function setSize(d) {
    }
    else if(d.type=="root_node")
    {
+     console.log("in root");
      return "#79a6d2";
    }
    else if(d.type=="mid_node")
@@ -175,10 +181,13 @@ function update()
 
 
   nodeEnter.append("circle")
+            		//.attr("r", setSize)
+                //.attr("fill", color)
+            		.style("stroke", color);
 
-            		.attr("r", setSize)
-                .attr("fill", color)
-            		.style("stroke", color)
+                node.select("circle").attr("r", setSize)
+    .style("fill", color);
+
 
 
     nodeEnter.append("text")
@@ -547,16 +556,19 @@ function expandQualifier(d)
 function click(d) {
 
   if (d3.event && d3.event.defaultPrevented) return; // ignore drag
-
+  console.log(d);
   if (d.type=="node" ) {
 
-
-
-    getData(`/api/${d.o}`);
+    //console.log(d);
     d.type="root_node";
+    console.log(d);
+    getData(`/api/${d.o}`);
+
     d.x = height / 2;
     d.y = width / 2;
+    d.type="root_node";
     update();
+    d.type="root_node";
     d.x = height / 2;
     d.y = width / 2;
 
