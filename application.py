@@ -26,6 +26,7 @@ def index(node):
 
 @app.route('/graph/api/<node>', methods=['GET'])
 def api(node):
+    node = node.capitalize()
     response = requests.get("https://dsbox02.isi.edu:8888/kgtk-browser/kgtk/browser/backend/get_all_node_data?node={node}&lang=en&images=true&fanouts=true".format(node=node))
     return jsonify(response.json())
 
