@@ -439,7 +439,7 @@ console.log('location query');
 console.log(locationQuery);
 console.log(locationQuery.has("node"));
 console.log(locationQuery);
-getData("/api/".concat(node_val));
+getData("/graph/api/".concat(node_val));
 function edgeUpdate(links)
 {
 
@@ -590,7 +590,7 @@ function click(d) {
     //console.log(d);
     d.type="root_node";
     console.log(d);
-    getData(`/api/${d.o}`);
+    getData(`/graph/api/${d.o}`);
 
     d.x = height / 2;
     d.y = width / 2;
