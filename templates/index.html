@@ -22,7 +22,6 @@
 }
 
 line.link {
-  /* //fill: none; */
   stroke: #C8C8C8;
   stroke-width: 1px;
 }
@@ -71,7 +70,7 @@ fetch(`/search/${search_val}`)
 $("#sel").empty();
           var ele = document.getElementById('sel');
                       for (var i = 0; i < search_results.length; i++) {
-                          // POPULATE SELECT ELEMENT WITH JSON.
+
                           ele.innerHTML = ele.innerHTML +
                               '<option value="' + search_results[i][0] + '">' + search_results[i][1] + '</option>';
                       }
@@ -104,7 +103,7 @@ $("#sel").empty();
 
     <p id="msg"></p>
   <script>
-  //https://commons.wikimedia.org/wiki/File:
+
 
 var json;
 var nodeSet = new Set();
@@ -115,7 +114,7 @@ var nodeCount = 0;
 var midNodeCount = 0;
 var width = 1400,
     height = 850;
-//var modify= 1;
+
 
 var p_list =[];
 
@@ -286,9 +285,8 @@ function getData(URL)
 
       var commonNodeMap={};
       var literalMap = {};
-      //var propertyMap={};
 
-      console.log(data);
+
 
       var label_mapping = data["objects"][1]["labels"];
       var image_mapping = data["objects"][2]["images"];
@@ -299,17 +297,11 @@ function getData(URL)
       if(!nodeMap.hasOwnProperty(data_mapping["@id"]))
       {
 
-      //json_create["nodes"].push({"name": "Ringo", "fanout": edges.length ,"type":"root_node", "id": data_mapping["@id"]});
 
       json_create["nodes"].push({"name": data_mapping["label"][0], "fanout": edges.length ,"type":"root_node", "id": data_mapping["@id"]});
-      //
-      // if(!modify)
-      // {
-      //   nodeCount++;
-      //
-      // }
 
-      //modify= 0;
+
+
       nodeMap[data_mapping["@id"]]= nodeCount;
       nodeCount++;
 
@@ -329,27 +321,10 @@ continue;
 
 
 
-// if(!nodeMap.hasOwnProperty(edge.o))
-// {
-//
-// nodeMap[edge.o]= nodeCount;
-// nodeCount++;
-//
-// if(label_mapping.hasOwnProperty(edge.o))
-// {
-//     json_create["nodes"].push({"name": label_mapping[edge.o][0], "fanout": fan_mapping[edges[i]["o"]], "type":"node", "o": edge.o , "id": edge.o});
-//
-// }
-//   else {
-//     json_create["nodes"].push({"name": edge.o, "type":"literal_node", "id":edge.o});
-// }
-//
-// }
 
 if(edge.hasOwnProperty("qualifiers"))
 {
 
-  //var json_temp ={"nodes":[], "links":[]};
 
   if(!nodeMap.hasOwnProperty(edge.o))
   {
@@ -406,44 +381,30 @@ else {
             literalMap[edge.p]=[edge.o];
           }
   }
-  //   else {
-  //     json_create["nodes"].push({"name": edge.o, "type":"literal_node", "id":edge.o});
-  // }
+
 
   }
 
 
-  // if(commonNodeMap.hasOwnProperty((edge.s).concat("#").concat(edge.p)))
-  // {
-  //     commonNodeMap[(edge.s).concat("#").concat(edge.p)].push([edge.o, edge["@id"]]);
-  // }
-  // else {
-  //     commonNodeMap[(edge.s).concat("#").concat(edge.p)]= [[edge.o, edge["@id"]]];
-  // }
-
-  //json_create["links"].push({"source": nodeMap[edge.s], "target":nodeMap[edge.o], "weight":1, "label": label_mapping[edge.p][0], "id":edge["@id"], "linkDistance": 120});
-
 }
 
 }
 
-console.log(commonNodeMap);
+
 
 for(var key in commonNodeMap)
 {
-console.log(key);
+
 var value_list = commonNodeMap[key];
 if(value_list.length==1)
 {
-  console.log("In if");
+
   var elem = value_list[0];
   json_create["links"].push({"source": nodeMap[key.split("#")[0]], "target":nodeMap[elem[0]], "weight":1, "label": label_mapping[key.split("#")[1]][0], "id":elem[1], "linkDistance": 160});
 
 }
 else {
-  //var elem = value_list[0];
-  //json_create["links"].push({"source": nodeMap[key.split("#")[0]], "target":nodeMap[elem[0]], "weight":1, "label": label_mapping[key.split("#")[1]][0], "id":elem[1], "linkDistance": 120});
-   console.log("In else");
+
   nodeMap[key]= nodeCount;
   nodeCount++;
   midNodeCount++;
@@ -452,7 +413,7 @@ else {
 
   for(var i= 0; i<value_list.length; i++)
   {
-       console.log("In for loop");
+
     var val = value_list[i];
     json_create["links"].push({"source": nodeMap[key], "target":nodeMap[val[0]], "weight":1, "label": "", "id":val[1], "linkDistance": 60});
 
@@ -479,7 +440,7 @@ for(var property in literalMap)
 
 
 json = json_create;
-console.log(json);
+
 
 update();
 
@@ -520,14 +481,14 @@ function edgeUpdate(links)
             edgelabels.append('textPath')
                 .attr('xlink:href',function(d,i) {return '#edgepath'+d.id})
                 .style("pointer-events", "none")
-                .style("text-anchor","middle") //place the text halfway on the arc
+                .style("text-anchor","middle")
     .attr("startOffset", "50%")
                 .text(function(d,i){
-                //  console.log(d);
+
 
                   if(d )
                   {
-                    // if(d.target)
+
                     return d.label;
                   }
 
@@ -564,7 +525,7 @@ var svg = d3.select("body").append("svg")
          .attr("xlink:href", function(d) {
            return "http://placehold.it/50&text=Ringo";
 
-           //"http://lorempixel.com/" + 50 + "/" + 50 + "/people/" + 1;
+
          });
 
 
@@ -578,14 +539,8 @@ var svg = d3.select("body").append("svg")
                var edgelabels = svg.selectAll(".edgelabel");
 
 
-               //var force = d3.layout.force("charge_force")
-                     // .linkDistance(175)
-                     // .charge(-200)
-                     // .gravity(0)
 var force = d3.layout
-// .force("link", d3.forceLink())
-//   .force("charge", d3.forceManyBody().strength(-5))
-//   .force("center", d3.forceCenter(width /2, height / 2))
+
 .force("center_force")
 .distance(100)
 .charge(-1200)
@@ -595,10 +550,6 @@ var force = d3.layout
 force.linkDistance(function (d) {
        return d.linkDistance;
  })
-
-
-//getData("/api/Q28022144");
-
 
 
 function expandQualifier(d)
@@ -625,18 +576,14 @@ function expandQualifier(d)
        else {
         fan_val = 10;
        }
-         //json_create["nodes"].push({"name": label_mapping[qualifier_edge.o][0], "fanout": fan_mapping[qualifier_edge.o], "type":"node", "o": qualifier_edge.o , "id": qualifier_edge.o});
          json_create["nodes"].push({"name": d.label_mapping[qualifier_edge.o][0], "fanout": fan_val, "type":"node", "o": qualifier_edge.o , "id": qualifier_edge.o});
 
      }
        else {
          json_create["nodes"].push({"name": qualifier_edge.o, "type":"literal_node", "id":qualifier_edge.o});
-         //json_create["nodes"].push({"name": qualifier_edge.o, "type":"literal_node", "id":qualifier_edge.o});
      }
 
      }
-
-     //json_create["links"].push({"source": nodeMap[(edge.p).concat(edge["@id"])], "target":nodeMap[qualifier_edge.o], "weight":1, "label": label_mapping[qualifier_edge.p][0], "id":(qualifier_edge.o).concat(edge["@id"]), "linkDistance": 160});
 
      json_create["links"].push({"source": nodeMap[(d.edge_p).concat(d.edge_id)], "target":nodeMap[qualifier_edge.o], "weight":1, "label": d.label_mapping[qualifier_edge.p][0], "id":(qualifier_edge.o).concat(d.edge_id), "linkDistance": 50, "type":"qualifier_edge"  });
 
@@ -647,12 +594,12 @@ function expandQualifier(d)
 }
 
 function click(d) {
-  //alert("haha");
+
   if (d3.event && d3.event.defaultPrevented) return; // ignore drag
 
   if (d.type=="node" ) {
 
-    console.log(`/api/${d.o}`);
+
 
     getData(`/api/${d.o}`);
     d.type="root_node";
@@ -661,7 +608,7 @@ function click(d) {
     update();
     d.x = height / 2;
     d.y = width / 2;
-  console.log(json["nodes"]);
+
 
 
   }
@@ -703,9 +650,6 @@ function click(d) {
 
 
   });
-
-
-
 
 
 
