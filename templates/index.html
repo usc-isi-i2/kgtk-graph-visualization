@@ -397,6 +397,11 @@ return ;
 
 }
 var node_val = '{{value}}';
+const locationQuery = new URLSearchParams(location.search)
+console.log('location query');
+console.log(locationQuery);
+console.log(locationQuery.has("node"));
+console.log(locationQuery);
 getData("/api/".concat(node_val));
 function edgeUpdate(links)
 {
@@ -422,7 +427,7 @@ function edgeUpdate(links)
                 .attr({'class':'edgelabel',
                        'id':function(d,i){return 'edgelabel'+d.id},
                        'dx':"0em",
-                       'dy':-5,
+                       'dy':-8,
                        'font-size':9,
 
                        'fill':'#D0D0D0'});
@@ -447,8 +452,7 @@ function edgeUpdate(links)
 
 }
 
-var img_id = function(d){ return "img_" + d; }
-    var img_url = function(d){ return "url(#img_" + d.name + ")"; }
+
 var svg = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height).append("g");
@@ -476,8 +480,6 @@ var svg = d3.select("body").append("svg")
 
 
          });
-
-
 
 
                var link = svg.selectAll(".link");

@@ -19,9 +19,9 @@ app.static_url_path='/static'
 
 ### URL handlers:
 
-@app.route('/')
-def index():
-    return render_template("index.html", value = "Q28022144")
+@app.route('/<node>', methods=['GET'])
+def index(node):
+    return render_template("index.html", value = node)
 
 
 @app.route('/api/<node_no>', methods=['GET'])
