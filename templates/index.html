@@ -23,7 +23,7 @@ white-space:normal;
 }
 
 .node text {
-  font: 12.5px sans-serif;
+  font: 13.5px sans-serif;
   pointer-events: none;
   text-anchor: middle;
 }
@@ -34,7 +34,7 @@ line.link {
 }
 
 .link text {
-  font: 10px sans-serif;
+  font: 11px sans-serif;
   pointer-events: none;
   text-anchor: middle;
 }
@@ -311,7 +311,7 @@ if(edge.hasOwnProperty("qualifiers"))
   nodeCount++;
   json_create["nodes"].push({"name": "", "type":"qualifier_node", "id":(edge.p).concat(edge["@id"]), "qualifier_json": edge.qualifiers, "label_mapping": label_mapping, "edge_p":edge.p, "fan_mapping":fan_mapping, "edge_id": edge["@id"]});
   json_create["links"].push({"source": nodeMap[edge.s], "target":nodeMap[(edge.p).concat(edge["@id"])], "weight":1, "label": "", "id":edge["@id"], "linkDistance": 50});
-  json_create["links"].push({"source": nodeMap[(edge.p).concat(edge["@id"])], "target":nodeMap[edge.o], "weight":1, "label": label_mapping[edge.p][0], "id":(edge.o).concat(edge["@id"]), "linkDistance": 70});
+  json_create["links"].push({"source": nodeMap[(edge.p).concat(edge["@id"])], "target":nodeMap[edge.o], "weight":1, "label": label_mapping[edge.p][0], "id":(edge.o).concat(edge["@id"]), "linkDistance": 90});
 
 
 }
@@ -364,7 +364,7 @@ if(value_list.length==1)
 {
 
   var elem = value_list[0];
-  json_create["links"].push({"source": nodeMap[key.split("#")[0]], "target":nodeMap[elem[0]], "weight":1, "label": label_mapping[key.split("#")[1]][0], "id":elem[1], "linkDistance": 160});
+  json_create["links"].push({"source": nodeMap[key.split("#")[0]], "target":nodeMap[elem[0]], "weight":1, "label": label_mapping[key.split("#")[1]][0], "id":elem[1], "linkDistance": 170});
 
 }
 else {
@@ -373,7 +373,7 @@ else {
   nodeCount++;
   midNodeCount++;
   json_create["nodes"].push({"name": "", "type":"mid_node", "id":key});
-  json_create["links"].push({"source": nodeMap[key.split("#")[0]], "target":nodeMap[key], "weight":1, "label": label_mapping[key.split("#")[1]][0], "id":(key).concat("#").concat(midNodeCount), "linkDistance": 120});
+  json_create["links"].push({"source": nodeMap[key.split("#")[0]], "target":nodeMap[key], "weight":1, "label": label_mapping[key.split("#")[1]][0], "id":(key).concat("#").concat(midNodeCount), "linkDistance": 140});
 
   for(var i= 0; i<value_list.length; i++)
   {
@@ -399,6 +399,11 @@ for(var property in literalMap)
   for(var j=0;j<literal_list.length; j++)
   {
     console.log(literal_list[j]);
+    if(literal_list[j].includes("jpg")||literal_list[j].includes("svg")||literal_list[j].includes("png")||literal_list[j].includes("jpeg"))
+    {
+      sub_div+=" <a href='#' class='list-group-item test'>".concat(label_mapping[property][0]).concat("<span class='float-right badge badge-light round test'><img style='max-height:300px; max-width:350px;' src='https://commons.wikimedia.org/w/index.php?title=Special:Redirect/file/").concat(literal_list[j].replace(/'|"/g, "")).concat("' class='img-fluid'></span> </a>");
+      continue;
+    }
     if(literal_list[j].length>25)
     {
       sub_div+=" <a href='#' class='list-group-item test'>".concat(label_mapping[property][0]).concat("<span class='float-right badge badge-light round test'>").concat(literal_list[j].substring(0,25)).concat("...</span> </a>");
@@ -459,7 +464,7 @@ function edgeUpdate(links)
                 .attr({'class':'edgelabel',
                        'id':function(d,i){return 'edgelabel'+d.id},
                        'dx':"0em",
-                       'dy':-8,
+                       'dy':-10,
                        'font-size':9,
 
                        'fill':'#D0D0D0'});
